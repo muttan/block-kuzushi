@@ -7,6 +7,13 @@ public abstract class RectangleGameObject extends BasicGameObject {
     protected float width;
     protected float height;
 
+    public float getWidth() {
+        return width;
+    }
+    public float getHeight() {
+        return height;
+    }
+
     @Override
     public boolean isHit(IGameObject gameObject) {
         if (!this.isAlive()) {

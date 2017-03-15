@@ -34,23 +34,26 @@ public class Main extends BasicGame {
     public void init(GameContainer container) throws SlickException {
         objects = new ArrayList<>();
         pendingObjects = new ArrayList<>();
-        for (int i = 0; i < 1; i++) {
-            objects.add(initBall(320, 110));
+        objects.add(new Wall());
+        Bar bar =new Bar();
+        objects.add(bar);
+        for (int i = 0; i < 100; i++) {
+            Ball ball=initBall(bar.getX()+bar.getWidth()/2-Ball.WIDTH/2, bar.getY()+Ball.HEIGHT);
+            objects.add(ball);
+            ball.stick(bar);
         }
         for (int x = 0; x < 640; x += 64) {
             for (int y = 0; y < 100; y += 25) {
                 objects.add(initBlock(x, y));
             }
         }
-        objects.add(new Wall());
-        objects.add(new Bar());
+
     }
 
-    private IGameObject initBall(float x, float y) {
+    private Ball initBall(float x, float y) {
         float dx;
         float dy;
-        double theta;
-        theta = gameRandom.nextDouble() * 2 * Math.PI;
+        double theta = Main.gameRandom.nextDouble() * 1 / 2 * Math.PI + 5f / 4f * Math.PI;
         dx = (float) Math.cos(theta) * 0.4f;
         dy = (float) Math.sin(theta) * 0.4f;
         switch (gameRandom.nextInt(1)) {
@@ -58,15 +61,13 @@ public class Main extends BasicGame {
                 return new Ball(x, y, dx, dy, gameRandom.nextInt(4));
             case 1:
                 return new GravityBall(x, y, dx, dy, gameRandom.nextInt(4));
-            case 2:
-                return new SquareBall(x, y, gameRandom.nextInt(4));
             default:
                 return null;
         }
     }
 
     private IGameObject initBlock(int x, int y) {
-        return new Block(x, y, 64, 25);
+        return new StaticBlock(x, y, 64, 25);
     }
 
     @Override
@@ -75,7 +76,7 @@ public class Main extends BasicGame {
         deadObjects = new ArrayList<>();
         for (IGameObject object : objects) {
             object.update(container, delta);
-            if (object.isAlive() == false) {
+            if (!object.isAlive()) {
                 deadObjects.add(object);
             }
         }
@@ -85,6 +86,7 @@ public class Main extends BasicGame {
         for (IGameObject pendingObject : pendingObjects) {
             objects.add(pendingObject);
         }
+
         pendingObjects.clear();
     }
 
@@ -103,6 +105,13 @@ public class Main extends BasicGame {
 
         pendingObjects.add(new Ball(x, y, dx, dy, gameRandom.nextInt(4)));
     }
+    /*
+    受け取ったobjectを追加リストに追加する
+     */
+    public void instantiate(IGameObject object){
+        pendingObjects.add(object);
+    }
+
 
     /**
      * @param args
