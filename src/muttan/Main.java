@@ -23,11 +23,25 @@ public class Main extends BasicGame {
     @Override
     public void render(GameContainer container, Graphics g) throws SlickException {
         g.setBackground(Color.white);
-        for (IGameObject object : objects) {
+        /*objects.stream().forEach(new Consumer<IGameObject>() {
+            @Override
+            public void accept(IGameObject object) {
+                if (object.isAlive()) {
+                    object.render(g);
+                }
+            }
+        });*/
+
+        objects.stream()
+                .filter(object -> object.isAlive())
+                .forEach(object -> object.render(g));
+
+
+        /*for (IGameObject object : objects) {
             if (object.isAlive()) {
                 object.render(g);
             }
-        }
+        }*/
     }
 
     @Override
@@ -35,10 +49,10 @@ public class Main extends BasicGame {
         objects = new ArrayList<>();
         pendingObjects = new ArrayList<>();
         objects.add(new Wall());
-        Bar bar =new Bar();
+        Bar bar = new Bar();
         objects.add(bar);
-        for (int i = 0; i < 100; i++) {
-            Ball ball=initBall(bar.getX()+bar.getWidth()/2-Ball.WIDTH/2, bar.getY()+Ball.HEIGHT);
+        for (int i = 0; i < 1; i++) {
+            Ball ball = initBall(bar.getX() + bar.getWidth() / 2 - Ball.WIDTH / 2, bar.getY() + Ball.HEIGHT);
             objects.add(ball);
             ball.stick(bar);
         }
@@ -105,10 +119,11 @@ public class Main extends BasicGame {
 
         pendingObjects.add(new Ball(x, y, dx, dy, gameRandom.nextInt(4)));
     }
+
     /*
     受け取ったobjectを追加リストに追加する
      */
-    public void instantiate(IGameObject object){
+    public void instantiate(IGameObject object) {
         pendingObjects.add(object);
     }
 
@@ -124,6 +139,7 @@ public class Main extends BasicGame {
             container.start();
         } catch (SlickException e) {
             // ignore
+            return;
         }
     }
 
