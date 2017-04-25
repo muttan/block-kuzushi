@@ -2,9 +2,8 @@ package muttan;
 
 import org.newdawn.slick.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import javax.sound.midi.SysexMessage;
+import java.util.*;
 
 /**
  * Created by muttan on 2017/02/28.
@@ -31,7 +30,6 @@ public class Main extends BasicGame {
                 }
             }
         });*/
-
         objects.stream()
                 .filter(object -> object.isAlive())
                 .forEach(object -> object.render(g));
@@ -42,10 +40,40 @@ public class Main extends BasicGame {
                 object.render(g);
             }
         }*/
+
+        Map<String,Integer> objectCountMap = new HashMap<>();
+        for (IGameObject object:objects) {
+
+            int count = objectCountMap.getOrDefault((object.getClass().getName()),0);
+
+            objectCountMap.put(object.getClass().getName(),count+1);
+        }
+
+        String result = "";
+
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<String,Integer> objectCount:objectCountMap.entrySet()) {
+            builder.append( String.format("%s: %d \n", objectCount.getKey(),objectCount.getValue()));
+
+        }
+        for (IGameObject object:pendingObjects ){
+            builder.append(String.format("%s \n",object.getClass().getName()));
+        }
+        result = builder.toString();
+        g.setColor(Color.black);
+        g.drawString(result,11,31);
+        g.drawString(result,9,29);
+        g.drawString(result,11,29);
+        g.drawString(result,9,31);
+        g.setColor(Color.white);
+        g.drawString(result,10,30);
+
+
     }
 
     @Override
     public void init(GameContainer container) throws SlickException {
+
         objects = new ArrayList<>();
         pendingObjects = new ArrayList<>();
         objects.add(new Wall());
@@ -65,16 +93,13 @@ public class Main extends BasicGame {
     }
 
     private Ball initBall(float x, float y) {
-        float dx;
-        float dy;
-        double theta = Main.gameRandom.nextDouble() * 1 / 2 * Math.PI + 5f / 4f * Math.PI;
-        dx = (float) Math.cos(theta) * 0.4f;
-        dy = (float) Math.sin(theta) * 0.4f;
+        float angle= (float)(Main.gameRandom.nextDouble() * 1 / 2 * Math.PI + 1f / 4 * Math.PI);
+        float speed=  0.4f;
         switch (gameRandom.nextInt(1)) {
             case 0:
-                return new Ball(x, y, dx, dy, gameRandom.nextInt(4));
+                return new Ball(x, y, angle, speed, gameRandom.nextInt(4));
             case 1:
-                return new GravityBall(x, y, dx, dy, gameRandom.nextInt(4));
+                return new GravityBall(x, y, angle, speed, gameRandom.nextInt(4));
             default:
                 return null;
         }
@@ -132,6 +157,7 @@ public class Main extends BasicGame {
      * @param args
      */
     public static void main(String[] args) {
+
         instance = new Main("break out");
         AppGameContainer container;
         try {

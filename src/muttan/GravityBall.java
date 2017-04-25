@@ -13,6 +13,7 @@ public class GravityBall extends Ball {
     @Override
 
     public void update(GameContainer container, int delta) {
+      /*
         dy += 0.001;
         x += dx * delta;
         y += dy * delta;
@@ -30,5 +31,6 @@ public class GravityBall extends Ball {
             dy *= -1;
             y = -y;
         }
+        */
     }
 }

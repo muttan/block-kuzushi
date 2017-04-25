@@ -40,10 +40,9 @@ public class Block extends RectangleGameObject implements IBallHitListener {
     @Override
     public void onBallHit() {
         isAlive = false;
-        double theta = Main.gameRandom.nextDouble() * 1 / 2 * Math.PI + 5f / 4f * Math.PI;
-        float dx = (float) Math.cos(theta) * 0.4f;
-        float dy = -(float) Math.sin(theta) * 0.4f;
-        Main.instance.newBall(x + width / 2, y + height / 2, dx, dy);
+        float angle = (float)(Main.gameRandom.nextDouble() * 1 / 2 * Math.PI + 5f / 4 * Math.PI);;
+        float speed = 0.4f;
+        Main.instance.newBall(x + width / 2, y + height / 2, angle, speed);
     }
 
 }
